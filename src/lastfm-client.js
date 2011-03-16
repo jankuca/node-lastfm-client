@@ -33,6 +33,9 @@ module.exports.Client = Function.inherit(function (params) {
 			if (status !== 200) {
 				return callback(new Error('API call failed: HTTP status code ' + status));
 			}
+			if (data === null) {
+				return callback(new Error('Invalid response'));
+			}
 			callback(null, data.results);
 		});
 	},
@@ -67,7 +70,7 @@ module.exports.Client = Function.inherit(function (params) {
 				data += chunk;
 			});
 			response.on('end', function () {				
-				callback(this.statusCode, JSON.parse(data));
+				callback(this.statusCode, data ? JSON.parse(data) : null);
 			});
 		});
 		request.end();
