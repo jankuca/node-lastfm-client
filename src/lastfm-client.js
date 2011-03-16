@@ -36,7 +36,7 @@ module.exports.Client = Function.inherit(function (params) {
 			if (data === null) {
 				return callback(new Error('Invalid response'));
 			}
-			callback(null, data.results);
+			callback(null, data.results ? data.results : data);
 		});
 	},
 
