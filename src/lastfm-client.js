@@ -69,8 +69,8 @@ module.exports.Client = Function.inherit(function (params) {
 			response.on('data', function (chunk) {
 				data += chunk;
 			});
-			response.on('end', function () {				
-				callback(this.statusCode, data ? JSON.parse(data) : null);
+			response.on('end', function () {
+				callback(this.statusCode, data.length !== 3 ? JSON.parse(data) : null);
 			});
 		});
 		request.end();
