@@ -87,6 +87,15 @@ module.exports.Client = Function.inherit(function (params) {
 		return this.post('track.scrobble', params, callback);
 	},
 
+	'updateNowPlaying': function (sk, track, callback) {
+		var params = {};
+		Object.keys(track).forEach(function (key) {
+			params[key] = track[key];
+		});
+		params.sk = sk;
+		return this.post('track.updateNowPlaying', params, callback);
+	},
+
 	'_request': function (http_method, api_method, params, callback) {
 		var keys, uri, sig, request;
 
