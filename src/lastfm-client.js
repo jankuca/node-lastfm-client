@@ -1,8 +1,7 @@
-var http, path, Buffer, hashlib;
-http = require('http');
-path = require('path');
-Buffer = require('buffer').Buffer;
-hashlib = require('../lib/hashlib/hashlib.node');
+var crypto = require('crypto');
+var http = require('http');
+var path = require('path');
+var Buffer = require('buffer').Buffer;
 
 if (typeof Function.inherit !== 'function') {
 	require('utils/utils.js');
@@ -124,7 +123,7 @@ module.exports.Client = Function.inherit(function (params) {
 				}
 			}).join('');
 			sig += this.API_SECRET;
-			sig = hashlib.md5(sig);
+			sig = crypto.createHash('md5').update(sig).digest("hex");
 			params.api_sig = sig;
 			keys = keys.concat('api_sig', 'format');
 		} else {
