@@ -3,11 +3,8 @@ var http = require('http');
 var path = require('path');
 var Buffer = require('buffer').Buffer;
 
-if (typeof Function.inherit !== 'function') {
-	require('utils/utils.js');
-}
 
-module.exports.Client = Function.inherit(function (params) {
+exports.Client = function (params) {
 	if (!params.api_key) {
 		throw new Error('Missing API key');
 	}
@@ -18,16 +15,18 @@ module.exports.Client = Function.inherit(function (params) {
 	this.api_version = params.version || '2.0';
 
 	Object.defineProperty(this, 'API_KEY', {
-		'value': params.api_key,
+		value: params.api_key,
 	});
 	Object.defineProperty(this, 'API_SECRET', {
-		'value': params.secret,
+		value: params.secret,
 	});
 	Object.defineProperty(this, 'API_ROOT', {
-		'value': '/' + this.api_version + '/',
+		value: '/' + this.api_version + '/',
 	});
-}, {
-	'getAuthURL': function (callback_url) {
+};
+
+exports.Client.prototype = {
+	getAuthURL: function (callback_url) {
 		if (!callback_url) {
 			throw new Error('Missing auth callback URL');
 		}
@@ -35,7 +34,7 @@ module.exports.Client = Function.inherit(function (params) {
 		return 'http://www.last.fm/api/auth/?api_key=' + encodeURIComponent(this.API_KEY) + '&cb=' + encodeURIComponent(callback_url);
 	},
 
-	'get': function (api_method, params, callback) {
+	get: function (api_method, params, callback) {
 		if (typeof callback !== 'function') {
 			throw new Error('Missing callback function');
 		}
@@ -54,7 +53,7 @@ module.exports.Client = Function.inherit(function (params) {
 		});
 	},
 
-	'post': function (api_method, params, callback) {
+	post: function (api_method, params, callback) {
 		this._request('POST', api_method, params, function (status, data) {
 			if (status >= 300) {
 				return callback(new Error('API call failed: HTTP status code ' + status));
@@ -66,7 +65,7 @@ module.exports.Client = Function.inherit(function (params) {
 		});
 	},
 
-	'scrobble': function (sk, tracks, callback) {
+	scrobble: function (sk, tracks, callback) {
 		var params = {},
 			ts = Math.floor(new Date().getTime() / 1000);
 		if (tracks instanceof Array) {
@@ -86,7 +85,7 @@ module.exports.Client = Function.inherit(function (params) {
 		return this.post('track.scrobble', params, callback);
 	},
 
-	'updateNowPlaying': function (sk, track, callback) {
+	updateNowPlaying: function (sk, track, callback) {
 		var params = {};
 		Object.keys(track).forEach(function (key) {
 			params[key] = track[key];
@@ -95,7 +94,7 @@ module.exports.Client = Function.inherit(function (params) {
 		return this.post('track.updateNowPlaying', params, callback);
 	},
 
-	'love': function (sk, track, callback) {
+	love: function (sk, track, callback) {
 		var params = {};
 		Object.keys(track).forEach(function (key) {
 			params[key] = track[key];
@@ -104,7 +103,7 @@ module.exports.Client = Function.inherit(function (params) {
 		return this.post('track.love', params, callback);
 	},
 
-	'_request': function (http_method, api_method, params, callback) {
+	_request: function (http_method, api_method, params, callback) {
 		var keys, uri, sig, request;
 
 		http_method.toUpperCase();
@@ -157,7 +156,7 @@ module.exports.Client = Function.inherit(function (params) {
 		request.end();
 	},
 
-	'_fixParams': function (params) {
+	_fixParams: function (params) {
 		if (!params.api_key) {
 			params.api_key = this.API_KEY;
 		}
@@ -165,4 +164,4 @@ module.exports.Client = Function.inherit(function (params) {
 			params.format = 'json';
 		}
 	},
-});
+};
