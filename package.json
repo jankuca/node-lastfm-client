@@ -2,7 +2,7 @@
   "author": "Jan Kuča <jan@jankuca.com> (http://jankuca.com)",
   "name": "lastfm-client",
   "description": "Node.js Last.fm Client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/jankuca/node-lastfm-client.git"

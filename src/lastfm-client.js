@@ -40,6 +40,9 @@ exports.Client.prototype = {
 		}
 
 		this._request('GET', api_method, params, function (status, data) {
+			if (status instanceof Error) {
+				return callback(status);
+			}
 			if (status !== 200) {
 				return callback(new Error('API call failed: HTTP status code ' + status));
 			}
@@ -55,6 +58,9 @@ exports.Client.prototype = {
 
 	post: function (api_method, params, callback) {
 		this._request('POST', api_method, params, function (status, data) {
+			if (status instanceof Error) {
+				return callback(status);
+			}
 			if (status >= 300) {
 				return callback(new Error('API call failed: HTTP status code ' + status));
 			}
@@ -149,6 +155,9 @@ exports.Client.prototype = {
 			response.on('end', function () {
 				callback(this.statusCode, data.length !== 3 ? JSON.parse(data) : null);
 			});
+		});
+		request.on('error', function (err) {
+			callback(err, null);
 		});
 		if (http_method !== 'GET') {
 			request.write(uri);
