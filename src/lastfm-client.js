@@ -128,7 +128,7 @@ exports.Client.prototype = {
 				}
 			}).join('');
 			sig += this.API_SECRET;
-			sig = crypto.createHash('md5').update(sig).digest("hex");
+			sig = crypto.createHash('md5').update(sig, 'utf8').digest("hex");
 			params.api_sig = sig;
 			keys = keys.concat('api_sig', 'format');
 		} else {
