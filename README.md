@@ -4,6 +4,7 @@ Node.js Last.fm Client Library
 
 ## Example
 
+```
 var LastfmClient = require('lastfm-client').Client;
 
 var api = new LastfmClient({
@@ -21,3 +22,4 @@ api.get('user.getRecentTracks', {'user': '[target username]'}, function(err, dat
 		}
 	}
 });
+```
